@@ -7,14 +7,14 @@ import { BusinessDNA } from "../types";
 import { Language, translations } from "../translations";
 import AdvisorResults from "./AdvisorResults";
 import Overview from "./dashboard/Overview";
-import ChatVoiceMock from "./dashboard/ChatVoice";
+import ChatVoice from "./dashboard/ChatVoice";
 import SmartBudget from "./dashboard/SmartBudget";
 import LocationIntel from "./dashboard/LocationIntel";
 import CompetitorIntel from "./dashboard/CompetitorIntel";
-import GoogleTrendsMock from "./dashboard/GoogleTrends";
+import GoogleTrends from "./dashboard/GoogleTrends";
 import WeeklyPlan from "./dashboard/WeeklyPlan";
 import ScenarioSimulator from "./dashboard/ScenarioSimulator";
-import IntegrationsMock from "./dashboard/Integrations";
+import Integrations from "./dashboard/Integrations";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
@@ -134,14 +134,14 @@ export default function Dashboard({ dna, userProfile, onStartOver, onLogout, lan
         <div className="p-6 md:p-8 relative z-10 min-h-full">
           {activeTab === "overview" && <Overview dna={dna} />}
           {activeTab === "advisor" && <AdvisorResults dna={dna} userProfile={userProfile} onStartOver={onStartOver} lang={lang} isEmbedded={true} />}
-          {activeTab === "chat" && <ChatVoiceMock />}
+          {activeTab === "chat" && <ChatVoice />}
           {activeTab === "budget" && <SmartBudget dna={dna} />}
           {activeTab === "location" && <LocationIntel dna={dna} />}
           {activeTab === "competitor" && <CompetitorIntel dna={dna} />}
-          {activeTab === "trends" && <GoogleTrendsMock dna={dna} />}
+          {activeTab === "trends" && <GoogleTrends dna={dna} />}
           {activeTab === "calendar" && <WeeklyPlan dna={dna} />}
           {activeTab === "simulator" && <ScenarioSimulator dna={dna} />}
-          {activeTab === "integrations" && <IntegrationsMock dna={dna} />}
+          {activeTab === "integrations" && <Integrations dna={dna} />}
         </div>
       </main>
 

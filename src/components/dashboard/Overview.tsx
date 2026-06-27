@@ -2,12 +2,42 @@ import { BusinessDNA } from "../../types";
 import { AlertCircle, TrendingUp, Lightbulb, Download, FileText } from "lucide-react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
+interface OverviewData {
+  businessScore: number;
+  riskLevel: number;
+  opportunityScore: number;
+  alerts: Array<{ title: string; description: string; type: string }>;
+  recommendations: Array<{ id: number; title: string; description: string }>;
+}
+
 export default function Overview({ dna }: { dna: BusinessDNA }) {
   const [isExporting, setIsExporting] = useState(false);
+  const [data, setData] = useState<OverviewData | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchOverview = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch("/api/dna/overview", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ dna })
+        });
+        const result = await res.json();
+        setData(result);
+      } catch (error) {
+        console.error("Failed to fetch overview", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchOverview();
+  }, [dna]);
 
   const handleExportPDF = async () => {
     setIsExporting(true);
@@ -55,84 +85,83 @@ export default function Overview({ dna }: { dna: BusinessDNA }) {
         </div>
       </div>
       
-      {/* Top Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-        <Card className="bg-zinc-950 border-zinc-800 hover:border-emerald-500/50 transition-colors shadow-lg shadow-black/20">
-          <CardContent className="p-5">
-            <div className="flex justify-between items-center mb-4">
-              <span className="text-[10px] font-mono text-emerald-500/80 uppercase">Business Score</span>
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            </div>
-            <p className="text-3xl font-bold text-zinc-50 mb-1">84<span className="text-base text-zinc-500">/100</span></p>
-            <p className="text-xs text-emerald-400 flex items-center gap-1"><TrendingUp className="w-3 h-3"/> +12% vs last week</p>
-          </CardContent>
-        </Card>
-        <Card className="bg-zinc-950 border-zinc-800 hover:border-amber-500/50 transition-colors shadow-lg shadow-black/20">
-          <CardContent className="p-5">
-            <div className="flex justify-between items-center mb-4">
-              <span className="text-[10px] font-mono text-amber-500/80 uppercase">Risk Level</span>
-            </div>
-            <p className="text-3xl font-bold text-amber-400 mb-1">32<span className="text-base text-amber-400/50">%</span></p>
-            <p className="text-xs text-amber-400/80 line-clamp-1">Moderate risk in {dna.district}</p>
-          </CardContent>
-        </Card>
-        <Card className="bg-zinc-950 border-zinc-800 hover:border-blue-500/50 transition-colors shadow-lg shadow-black/20">
-          <CardContent className="p-5">
-            <div className="flex justify-between items-center mb-4">
-              <span className="text-[10px] font-mono text-blue-500/80 uppercase">Opportunity Score</span>
-            </div>
-            <p className="text-3xl font-bold text-blue-400 mb-1">9.2<span className="text-base text-blue-400/50">/10</span></p>
-            <p className="text-xs text-blue-400/80">3 new insights found</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Middle Section: Alerts and Recommendations */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Competitor Alerts */}
-        <Card className="bg-zinc-950 border-zinc-800 p-6">
-          <h3 className="text-sm font-bold text-zinc-50 mb-4 flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 text-amber-500" /> Competitor Alerts
-          </h3>
-          <div className="space-y-4">
-            <div className="p-3 bg-amber-500/5 border border-amber-500/10 rounded-xl">
-              <p className="text-xs text-amber-400 font-bold mb-1">Price Drop Detected</p>
-              <p className="text-xs text-zinc-400 leading-relaxed">Top Competitor A reduced prices by 15% in {dna.district}. Consider running a targeted promotion.</p>
-            </div>
-            <div className="p-3 bg-blue-500/5 border border-blue-500/10 rounded-xl">
-              <p className="text-xs text-blue-400 font-bold mb-1">New Competitor</p>
-              <p className="text-xs text-zinc-400 leading-relaxed">A new {dna.industry || 'business'} opened 2km away from your target area.</p>
-            </div>
+      {loading || !data ? (
+        <div className="flex items-center justify-center h-64 text-emerald-500">
+          <span className="w-8 h-8 border-4 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin"></span>
+        </div>
+      ) : (
+        <>
+          {/* Top Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+            <Card className="bg-zinc-950 border-zinc-800 hover:border-emerald-500/50 transition-colors shadow-lg shadow-black/20">
+              <CardContent className="p-5">
+                <div className="flex justify-between items-center mb-4">
+                  <span className="text-[10px] font-mono text-emerald-500/80 uppercase">Business Score</span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                </div>
+                <p className="text-3xl font-bold text-zinc-50 mb-1">{data.businessScore}<span className="text-base text-zinc-500">/100</span></p>
+                <p className="text-xs text-emerald-400 flex items-center gap-1"><TrendingUp className="w-3 h-3"/> AI Calculated</p>
+              </CardContent>
+            </Card>
+            <Card className="bg-zinc-950 border-zinc-800 hover:border-amber-500/50 transition-colors shadow-lg shadow-black/20">
+              <CardContent className="p-5">
+                <div className="flex justify-between items-center mb-4">
+                  <span className="text-[10px] font-mono text-amber-500/80 uppercase">Risk Level</span>
+                </div>
+                <p className="text-3xl font-bold text-amber-400 mb-1">{data.riskLevel}<span className="text-base text-amber-400/50">%</span></p>
+                <p className="text-xs text-amber-400/80 line-clamp-1">Analyzed for {dna.district}</p>
+              </CardContent>
+            </Card>
+            <Card className="bg-zinc-950 border-zinc-800 hover:border-blue-500/50 transition-colors shadow-lg shadow-black/20">
+              <CardContent className="p-5">
+                <div className="flex justify-between items-center mb-4">
+                  <span className="text-[10px] font-mono text-blue-500/80 uppercase">Opportunity Score</span>
+                </div>
+                <p className="text-3xl font-bold text-blue-400 mb-1">{data.opportunityScore}<span className="text-base text-blue-400/50">/10</span></p>
+                <p className="text-xs text-blue-400/80">Active insights generated</p>
+              </CardContent>
+            </Card>
           </div>
-        </Card>
 
-        {/* AI Quick Recommendations */}
-        <Card className="bg-zinc-950 border-zinc-800 p-6">
-          <h3 className="text-sm font-bold text-zinc-50 mb-4 flex items-center gap-2">
-            <Lightbulb className="w-4 h-4 text-emerald-500" /> AI Recommendations
-          </h3>
-          <div className="space-y-3">
-            <div className="flex items-start gap-3 p-3 hover:bg-zinc-50/5 rounded-xl transition-colors cursor-pointer border border-transparent hover:border-zinc-800">
-              <div className="w-6 h-6 rounded-full bg-emerald-500/10 flex items-center justify-center shrink-0">
-                <span className="text-emerald-500 font-bold text-[10px]">1</span>
+          {/* Middle Section: Alerts and Recommendations */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Competitor Alerts */}
+            <Card className="bg-zinc-950 border-zinc-800 p-6">
+              <h3 className="text-sm font-bold text-zinc-50 mb-4 flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 text-amber-500" /> Market Alerts
+              </h3>
+              <div className="space-y-4">
+                {data.alerts.map((alert, idx) => (
+                  <div key={idx} className={`p-3 border rounded-xl ${alert.type === 'warning' ? 'bg-amber-500/5 border-amber-500/10' : 'bg-blue-500/5 border-blue-500/10'}`}>
+                    <p className={`text-xs font-bold mb-1 ${alert.type === 'warning' ? 'text-amber-400' : 'text-blue-400'}`}>{alert.title}</p>
+                    <p className="text-xs text-zinc-400 leading-relaxed">{alert.description}</p>
+                  </div>
+                ))}
               </div>
-              <div>
-                <p className="text-xs font-bold text-zinc-200 mb-0.5">Reallocate Budget</p>
-                <p className="text-xs text-zinc-500 leading-relaxed">Shift 5% from rent to digital marketing for better ROI this month.</p>
+            </Card>
+
+            {/* AI Quick Recommendations */}
+            <Card className="bg-zinc-950 border-zinc-800 p-6">
+              <h3 className="text-sm font-bold text-zinc-50 mb-4 flex items-center gap-2">
+                <Lightbulb className="w-4 h-4 text-emerald-500" /> AI Recommendations
+              </h3>
+              <div className="space-y-3">
+                {data.recommendations.map((rec) => (
+                  <div key={rec.id} className="flex items-start gap-3 p-3 hover:bg-zinc-50/5 rounded-xl transition-colors cursor-pointer border border-transparent hover:border-zinc-800">
+                    <div className="w-6 h-6 rounded-full bg-emerald-500/10 flex items-center justify-center shrink-0">
+                      <span className="text-emerald-500 font-bold text-[10px]">{rec.id}</span>
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-zinc-200 mb-0.5">{rec.title}</p>
+                      <p className="text-xs text-zinc-500 leading-relaxed">{rec.description}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
-            </div>
-            <div className="flex items-start gap-3 p-3 hover:bg-zinc-50/5 rounded-xl transition-colors cursor-pointer border border-transparent hover:border-zinc-800">
-              <div className="w-6 h-6 rounded-full bg-emerald-500/10 flex items-center justify-center shrink-0">
-                <span className="text-emerald-500 font-bold text-[10px]">2</span>
-              </div>
-              <div>
-                <p className="text-xs font-bold text-zinc-200 mb-0.5">Explore Franchise</p>
-                <p className="text-xs text-zinc-500 leading-relaxed">Franchise opportunities match your budget with an 85% success probability.</p>
-              </div>
-            </div>
+            </Card>
           </div>
-        </Card>
-      </div>
+        </>
+      )}
     </div>
   );
 }

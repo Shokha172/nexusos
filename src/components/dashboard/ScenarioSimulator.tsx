@@ -10,12 +10,24 @@ export default function ScenarioSimulator({ dna }: { dna: BusinessDNA }) {
   const [result, setResult] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const handleSimulate = () => {
+  const handleSimulate = async () => {
+    if (!scenario.trim()) return;
     setLoading(true);
-    setTimeout(() => {
-      setResult("AI Hisob-kitoblariga ko'ra:\n\n1. Mijozlar oqimi o'rtacha 18% ga oshishi kutiladi.\n2. LTV (Mijozning umrboqiy qiymati) hisobga olinsa, bu xarajat 2.5 oyda qoplanadi.\n3. Risk: Mahalliy bozorda (Tumanda) bu miqdordagi reklamaga javob beradigan auditoriya sig'imi yetarli bo'lmasligi mumkin. Ijtimoiy tarmoqlardagi target qamrovini kengroq olish tavsiya etiladi.");
+    setResult(null);
+    try {
+      const res = await fetch("/api/dna/scenario", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ dna, scenario })
+      });
+      const data = await res.json();
+      setResult(data.result || "Simulyatsiya natijasi olinmadi.");
+    } catch (error) {
+      console.error("Simulation failed", error);
+      setResult("Xatolik yuz berdi. Iltimos qayta urinib ko'ring.");
+    } finally {
       setLoading(false);
-    }, 1500);
+    }
   }
 
   return (
@@ -48,6 +60,7 @@ export default function ScenarioSimulator({ dna }: { dna: BusinessDNA }) {
             />
             <Button 
               onClick={handleSimulate}
+              disabled={loading}
               className="bg-purple-600 hover:bg-purple-500 text-white font-bold h-12 px-6 rounded-xl transition-all shadow-lg shadow-purple-900/20"
             >
               {loading ? (

@@ -1,7 +1,7 @@
 import { Link as LinkIcon, Shield, FileText, Send } from "lucide-react";
 import { BusinessDNA } from "../../types";
 
-export default function IntegrationsMock({ dna }: { dna: BusinessDNA }) {
+export default function Integrations({ dna }: { dna: BusinessDNA }) {
   return (
     <div className="animate-fade-in max-w-4xl mx-auto space-y-6">
       <div className="flex justify-between items-end mb-6">

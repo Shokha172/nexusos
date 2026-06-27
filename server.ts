@@ -604,6 +604,114 @@ app.post("/api/dna/trends", async (req, res) => {
   }
 });
 
+// 3f. Generate Overview Data
+app.post("/api/dna/overview", async (req, res) => {
+  const { dna } = req.body;
+
+  const client = getGeminiClient();
+  if (!client) {
+    return res.json({
+      businessScore: 84,
+      riskLevel: 32,
+      opportunityScore: 9.2,
+      alerts: [
+        { title: "Price Drop Detected", description: `Top Competitor A reduced prices by 15% in ${dna?.district || 'your area'}. Consider running a targeted promotion.`, type: "warning" },
+        { title: "New Competitor", description: `A new ${dna?.industry || 'business'} opened 2km away from your target area.`, type: "info" }
+      ],
+      recommendations: [
+        { id: 1, title: "Reallocate Budget", description: "Shift 5% from rent to digital marketing for better ROI this month." },
+        { id: 2, title: "Explore Franchise", description: "Franchise opportunities match your budget with an 85% success probability." }
+      ]
+    });
+  }
+
+  try {
+    const prompt = `
+      Based on the business DNA: Industry: ${dna?.industry}, Location: ${dna?.location}, Budget: ${dna?.budget}.
+      Generate a realistic dashboard overview including business score (0-100), risk level (0-100%), opportunity score (0-10), 2 competitor alerts, and 2 AI recommendations.
+    `;
+    const response = await client.models.generateContent({
+      model: "gemini-3.5-flash",
+      contents: prompt,
+      config: {
+        systemInstruction: "You are an AI Business Dashboard generator.",
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            businessScore: { type: Type.INTEGER },
+            riskLevel: { type: Type.INTEGER },
+            opportunityScore: { type: Type.NUMBER },
+            alerts: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  title: { type: Type.STRING },
+                  description: { type: Type.STRING },
+                  type: { type: Type.STRING, description: "'warning' or 'info'" }
+                },
+                required: ["title", "description", "type"]
+              }
+            },
+            recommendations: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  id: { type: Type.INTEGER },
+                  title: { type: Type.STRING },
+                  description: { type: Type.STRING }
+                },
+                required: ["id", "title", "description"]
+              }
+            }
+          },
+          required: ["businessScore", "riskLevel", "opportunityScore", "alerts", "recommendations"]
+        }
+      }
+    });
+
+    const data = JSON.parse(response.text || "{}");
+    return res.json(data);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Failed to generate overview data" });
+  }
+});
+
+// 3g. Scenario Simulator
+app.post("/api/dna/scenario", async (req, res) => {
+  const { dna, scenario } = req.body;
+
+  const client = getGeminiClient();
+  if (!client) {
+    return res.json({
+      result: "AI Hisob-kitoblariga ko'ra:\n\n1. Mijozlar oqimi o'rtacha 18% ga oshishi kutiladi.\n2. LTV (Mijozning umrboqiy qiymati) hisobga olinsa, bu xarajat 2.5 oyda qoplanadi.\n3. Risk: Mahalliy bozorda (Tumanda) bu miqdordagi reklamaga javob beradigan auditoriya sig'imi yetarli bo'lmasligi mumkin. Ijtimoiy tarmoqlardagi target qamrovini kengroq olish tavsiya etiladi."
+    });
+  }
+
+  try {
+    const prompt = `
+      Business: Industry: ${dna?.industry}, Location: ${dna?.location}, Budget: ${dna?.budget}.
+      User asks scenario: "${scenario}".
+      Provide a highly realistic projection in Uzbek language, using markdown bullet points. Mention metrics like customer flow, ROI time, and risks.
+    `;
+    const response = await client.models.generateContent({
+      model: "gemini-3.5-flash",
+      contents: prompt,
+      config: {
+        systemInstruction: "You are an AI Scenario Simulator. Provide realistic business impact projections.",
+      }
+    });
+
+    return res.json({ result: response.text });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Failed to simulate scenario" });
+  }
+});
+
 // 4. Generate branding style guidelines
 app.post("/api/dna/brand", async (req, res) => {
   const { dna } = req.body;
