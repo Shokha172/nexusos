@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { MapPin, Lock, Sparkles, AlertTriangle } from "lucide-react";
 import { BusinessDNA } from "../../types";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function LocationIntel({ dna }: { dna: BusinessDNA }) {
   const [location, setLocation] = useState<{lat: number, lng: number} | null>(null);
@@ -60,15 +62,15 @@ export default function LocationIntel({ dna }: { dna: BusinessDNA }) {
     <div className="animate-fade-in max-w-4xl mx-auto space-y-6">
       <div className="flex justify-between items-end mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-white mb-2">Location Intelligence</h2>
-          <p className="text-slate-400 text-sm">Optimal joylashuv tahlili: {dna.district || "Sizning hududingiz"}</p>
+          <h2 className="text-2xl font-bold text-zinc-50 mb-2">Location Intelligence</h2>
+          <p className="text-zinc-400 text-sm">Optimal joylashuv tahlili: {dna.district || "Sizning hududingiz"}</p>
         </div>
-        <button 
+        <Button 
           onClick={handleGetLocation}
-          className="bg-emerald-500 hover:bg-emerald-400 text-black px-4 py-2 rounded-lg font-bold text-sm transition-colors flex items-center gap-2"
+          className="bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold"
         >
-          <MapPin className="w-4 h-4" /> Joylashuvni yangilash
-        </button>
+          <MapPin className="w-4 h-4 mr-2" /> Joylashuvni yangilash
+        </Button>
       </div>
 
       <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4 flex items-start gap-3">
@@ -87,9 +89,9 @@ export default function LocationIntel({ dna }: { dna: BusinessDNA }) {
         </div>
       )}
 
-      <div className="bg-[#0a0b10] border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+      <Card className="bg-zinc-950 border-zinc-800 overflow-hidden shadow-xl p-0">
         {/* Real Map Area using OpenStreetMap Iframe (No API key required) */}
-        <div className="h-[400px] bg-[#111] relative flex items-center justify-center border-b border-slate-800">
+        <div className="h-[400px] bg-zinc-900 relative flex items-center justify-center border-b border-zinc-800">
           {location ? (
             <iframe 
               width="100%" 
@@ -100,16 +102,16 @@ export default function LocationIntel({ dna }: { dna: BusinessDNA }) {
               className="grayscale-[0.8] invert-[0.9] contrast-[1.2]"
             ></iframe>
           ) : (
-             <div className="flex flex-col items-center justify-center text-slate-500 animate-pulse">
+             <div className="flex flex-col items-center justify-center text-zinc-500 animate-pulse">
                <MapPin className="w-10 h-10 mb-2" />
                <p>Xarita yuklanmoqda...</p>
              </div>
           )}
         </div>
 
-        <div className="p-6 relative">
+        <CardContent className="p-6 relative">
           {isLoading && (
-            <div className="absolute inset-0 bg-[#0a0b10]/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center text-emerald-500">
+            <div className="absolute inset-0 bg-zinc-950/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center text-emerald-500">
               <Sparkles className="w-8 h-8 mb-2 animate-spin" />
               <p className="text-sm font-bold">AI Joylashuvni tahlil qilmoqda...</p>
             </div>
@@ -117,48 +119,48 @@ export default function LocationIntel({ dna }: { dna: BusinessDNA }) {
           
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div>
-              <p className="text-[10px] font-mono text-slate-500 uppercase mb-1">Business Score</p>
+              <p className="text-[10px] font-mono text-zinc-500 uppercase mb-1">Business Score</p>
               <p className="text-3xl font-black text-emerald-500">{analysis?.businessScore || "--"}</p>
             </div>
             <div>
-              <p className="text-[10px] font-mono text-slate-500 uppercase mb-1">Piyodalar oqimi</p>
-              <p className="text-xl font-bold text-white">{analysis?.footTraffic?.split(" ")[0] || "--"}</p>
+              <p className="text-[10px] font-mono text-zinc-500 uppercase mb-1">Piyodalar oqimi</p>
+              <p className="text-xl font-bold text-zinc-50">{analysis?.footTraffic?.split(" ")[0] || "--"}</p>
               <p className="text-xs text-emerald-400 mt-1">{analysis?.footTraffic}</p>
             </div>
             <div>
-              <p className="text-[10px] font-mono text-slate-500 uppercase mb-1">Transport qulayligi</p>
-              <p className="text-xl font-bold text-white">{analysis?.transport?.split(" ")[0] || "--"}</p>
-              <p className="text-xs text-slate-400 mt-1">{analysis?.transport}</p>
+              <p className="text-[10px] font-mono text-zinc-500 uppercase mb-1">Transport qulayligi</p>
+              <p className="text-xl font-bold text-zinc-50">{analysis?.transport?.split(" ")[0] || "--"}</p>
+              <p className="text-xs text-zinc-400 mt-1">{analysis?.transport}</p>
             </div>
             <div>
-              <p className="text-[10px] font-mono text-slate-500 uppercase mb-1">Raqobat zichligi</p>
+              <p className="text-[10px] font-mono text-zinc-500 uppercase mb-1">Raqobat zichligi</p>
               <p className="text-xl font-bold text-amber-400">{analysis?.competitionDensity?.split(" ")[0] || "--"}</p>
-              <p className="text-xs text-slate-400 mt-1">{analysis?.competitionDensity}</p>
+              <p className="text-xs text-zinc-400 mt-1">{analysis?.competitionDensity}</p>
             </div>
           </div>
 
           {analysis && (
-            <div className="mt-6 pt-6 border-t border-slate-800 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="mt-6 pt-6 border-t border-zinc-800 grid grid-cols-1 md:grid-cols-2 gap-6">
                <div>
-                  <h4 className="text-sm font-bold text-white mb-3 text-rose-400">Yaqin atrofdagi raqobatchilar</h4>
+                  <h4 className="text-sm font-bold text-zinc-50 mb-3 text-rose-400">Yaqin atrofdagi raqobatchilar</h4>
                   <ul className="list-disc pl-5 space-y-1">
                      {analysis.nearbyCompetitors?.map((c: string, i: number) => (
-                        <li key={i} className="text-xs text-slate-300">{c}</li>
+                        <li key={i} className="text-xs text-zinc-300">{c}</li>
                      ))}
                   </ul>
                </div>
                <div>
-                  <h4 className="text-sm font-bold text-white mb-3 text-emerald-400">Yashirin imkoniyatlar (Opportunities)</h4>
+                  <h4 className="text-sm font-bold text-zinc-50 mb-3 text-emerald-400">Yashirin imkoniyatlar (Opportunities)</h4>
                   <ul className="list-disc pl-5 space-y-1">
                      {analysis.opportunities?.map((o: string, i: number) => (
-                        <li key={i} className="text-xs text-slate-300">{o}</li>
+                        <li key={i} className="text-xs text-zinc-300">{o}</li>
                      ))}
                   </ul>
                </div>
             </div>
           )}
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

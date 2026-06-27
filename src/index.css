@@ -6,80 +6,32 @@
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 
   /* Tayanch AI Cyan/Blue Palette */
-  --color-emerald-400: #22d3ee; /* mapped emerald to cyan */
+  --color-emerald-400: #22d3ee;
   --color-emerald-500: #06b6d4;
   --color-emerald-600: #0891b2;
-  --color-emerald-950: rgba(6, 182, 212, 0.1);
 
-  --color-teal-400: #38bdf8; /* mapped teal to sky */
+  --color-teal-400: #38bdf8;
   --color-teal-500: #0ea5e9;
-
-  --color-indigo-400: #818cf8;
-  --color-indigo-500: #6366f1;
 }
 
-/* Tayanch AI Brand Reset & Glassmorphism */
-body, html, #root, .min-h-screen, [id="landing-container"], [id="dashboard-container"], [id="auth-container"], [id="wizard-container"] {
-  background-color: #020617 !important; /* Deep space blue */
-  color: #f8fafc !important;
+/* Tayanch AI Brand Reset */
+body, html, #root, .min-h-screen {
+  background-color: #09090b !important; /* zinc-950 */
+  color: #fafafa !important; /* zinc-50 */
   font-family: var(--font-sans);
 }
 
-/* Make backgrounds glassmorphic instead of flat dark */
-.bg-slate-950, .bg-slate-950\/40, .bg-slate-950\/50, .bg-\[\#0d0e14\], .bg-\[\#0d0e12\], .bg-\[\#0a0b0f\], .bg-\[\#0b0c10\], .bg-\[\#0b0c10\]\/60 {
-  background: rgba(15, 23, 42, 0.4) !important;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-}
-
-/* Glass panels for specific components */
-aside {
-  background: rgba(15, 23, 42, 0.6) !important;
-  backdrop-filter: blur(20px);
-  border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
-}
-
-header {
-  background: rgba(2, 6, 23, 0.7) !important;
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
-}
-
-/* Neon Borders for Glassmorphism */
-.border-slate-900, .border-slate-800, .border-\[\#1F1F1F\], .border-slate-950, .border-slate-900\/60, .border-b, .border-t, .border-r, .border-l {
-  border-color: rgba(255, 255, 255, 0.05) !important;
-}
-
 /* Elegant Buttons & Highlights */
-.bg-white {
+.bg-gradient-primary {
   background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%) !important;
   color: #ffffff !important;
-  border: none !important;
-  box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3) !important;
 }
 
-.bg-white:hover {
-  background: linear-gradient(135deg, #0891b2 0%, #2563eb 100%) !important;
-  box-shadow: 0 6px 20px rgba(6, 182, 212, 0.4) !important;
-}
-
-.text-black {
-  color: #ffffff !important;
-}
-
-/* Buttons that were originally emerald */
-.bg-emerald-500, .bg-emerald-500\/10, .bg-[#162724] {
-  background: linear-gradient(135deg, rgba(6, 182, 212, 0.8) 0%, rgba(59, 130, 246, 0.8) 100%) !important;
-  color: #ffffff !important;
-}
-
-.text-emerald-400 {
-  color: #22d3ee !important;
-}
-
-.border-emerald-500, .border-emerald-500\/20, .border-emerald-500\/15 {
-  border-color: rgba(6, 182, 212, 0.5) !important;
+.text-gradient-primary {
+  background: linear-gradient(to right, #34d399, #2dd4bf, #3b82f6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 /* Scrollbar styling */
@@ -88,14 +40,14 @@ header {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #020617 !important;
+  background: #09090b !important;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1) !important;
+  background: #27272a !important; /* zinc-800 */
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3) !important;
+  background: #3f3f46 !important; /* zinc-700 */
 }
 
 ::selection {

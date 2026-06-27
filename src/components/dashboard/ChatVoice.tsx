@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { Mic, Send, Bot, User, Volume2, Sparkles, StopCircle } from "lucide-react";
 import { BusinessDNA } from "../../types";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 interface ChatVoiceProps {
   dna: BusinessDNA;
@@ -151,16 +153,16 @@ export default function ChatVoice({ dna }: ChatVoiceProps) {
   };
 
   return (
-    <div className="animate-fade-in max-w-4xl mx-auto h-[80vh] flex flex-col border border-slate-800 bg-[#0a0b10] rounded-2xl overflow-hidden shadow-2xl">
+    <div className="animate-fade-in max-w-4xl mx-auto h-[80vh] flex flex-col border border-zinc-800 bg-zinc-950 rounded-2xl overflow-hidden shadow-2xl">
       {/* Header */}
-      <div className="p-4 border-b border-slate-800 bg-[#111] flex items-center justify-between">
+      <div className="p-4 border-b border-zinc-800 bg-zinc-900 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 relative">
             <Bot className="w-5 h-5 text-emerald-500" />
-            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-[#111] rounded-full"></span>
+            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-zinc-900 rounded-full"></span>
           </div>
           <div>
-            <h2 className="font-bold text-white text-sm">NEXUS AI Advisor</h2>
+            <h2 className="font-bold text-zinc-50 text-sm">NEXUS AI Advisor</h2>
             <p className="text-[10px] font-mono text-emerald-400 flex items-center gap-1">
               <Sparkles className="w-3 h-3" /> Powered by Gemini
             </p>
@@ -181,17 +183,19 @@ export default function ChatVoice({ dna }: ChatVoiceProps) {
               <div className={`p-4 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap ${
                 msg.role === 'user' 
                   ? 'bg-blue-600/20 border border-blue-500/30 text-blue-100 rounded-tr-sm' 
-                  : 'bg-slate-800/50 border border-slate-700 text-slate-300 rounded-tl-sm'
+                  : 'bg-zinc-800/50 border border-zinc-700 text-zinc-300 rounded-tl-sm'
               }`}>
                 {msg.content}
                 {msg.role === 'assistant' && i !== 0 && !isTyping && (
-                  <div className="mt-3 pt-3 border-t border-slate-700/50 flex gap-2">
-                    <button 
+                  <div className="mt-3 pt-3 border-t border-zinc-700/50 flex gap-2">
+                    <Button 
+                      variant="ghost"
+                      size="sm"
                       onClick={() => speakText(msg.content)}
-                      className="text-[10px] font-mono flex items-center gap-1 text-slate-400 hover:text-emerald-400 transition-colors"
+                      className="text-[10px] h-6 px-2 font-mono flex items-center gap-1 text-zinc-400 hover:text-emerald-400 transition-colors"
                     >
                       <Volume2 className="w-3 h-3" /> Tinglash
-                    </button>
+                    </Button>
                   </div>
                 )}
               </div>
@@ -204,7 +208,7 @@ export default function ChatVoice({ dna }: ChatVoiceProps) {
               <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
                 <Bot className="w-4 h-4" />
               </div>
-              <div className="p-4 rounded-2xl bg-slate-800/50 border border-slate-700 rounded-tl-sm flex items-center gap-1">
+              <div className="p-4 rounded-2xl bg-zinc-800/50 border border-zinc-700 rounded-tl-sm flex items-center gap-1">
                 <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-bounce"></span>
                 <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-bounce" style={{animationDelay: "0.2s"}}></span>
                 <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-bounce" style={{animationDelay: "0.4s"}}></span>
@@ -216,44 +220,47 @@ export default function ChatVoice({ dna }: ChatVoiceProps) {
       </div>
 
       {/* Input Area */}
-      <div className="p-4 border-t border-slate-800 bg-[#0a0b10]">
+      <div className="p-4 border-t border-zinc-800 bg-zinc-950">
         <div className="flex items-center gap-2 relative">
-          <button 
+          <Button 
+            variant={isRecording ? "destructive" : "secondary"}
+            size="icon"
             onClick={handleMic}
             className={`w-12 h-12 rounded-full flex items-center justify-center transition-all shrink-0 ${
-              isRecording ? 'bg-rose-500/20 text-rose-500 border border-rose-500/50 animate-pulse' : 'bg-slate-800 text-slate-400 hover:text-white'
+              isRecording ? 'animate-pulse' : 'bg-zinc-800 text-zinc-400 hover:text-zinc-50 hover:bg-zinc-700'
             }`}
           >
             {isRecording ? <StopCircle className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
-          </button>
+          </Button>
           
           <div className="flex-1 relative">
             {isRecording && !input ? (
-              <div className="h-12 w-full bg-slate-900 border border-slate-800 rounded-full px-6 flex items-center gap-3">
+              <div className="h-12 w-full bg-zinc-900 border border-zinc-800 rounded-full px-6 flex items-center gap-3">
                 <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
-                <span className="text-sm font-mono text-slate-400">Tinglanmoqda... Gapiring</span>
+                <span className="text-sm font-mono text-zinc-400">Tinglanmoqda... Gapiring</span>
               </div>
             ) : (
-              <input
+              <Input
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                 placeholder={isRecording ? "Siz gapirayotgan matn..." : "Biznesingiz haqida so'rang..."}
-                className="w-full h-12 bg-slate-900 border border-slate-800 text-white text-sm rounded-full px-6 focus:outline-none focus:border-emerald-500 transition-colors"
+                className="w-full h-12 bg-zinc-900/50 border-zinc-800 text-zinc-50 text-sm rounded-full px-6 focus-visible:ring-emerald-500 transition-colors"
               />
             )}
           </div>
 
-          <button 
+          <Button 
+            size="icon"
             onClick={handleSend}
             disabled={!input.trim() || isTyping}
             className={`w-12 h-12 rounded-full flex items-center justify-center transition-all shrink-0 ${
-              input.trim() && !isTyping ? 'bg-emerald-500 text-black hover:bg-emerald-400' : 'bg-slate-800 text-slate-500 cursor-not-allowed'
+              input.trim() && !isTyping ? 'bg-emerald-500 text-zinc-950 hover:bg-emerald-400' : 'bg-zinc-800 text-zinc-500 cursor-not-allowed'
             }`}
           >
             <Send className="w-5 h-5 ml-0.5" />
-          </button>
+          </Button>
         </div>
       </div>
     </div>
